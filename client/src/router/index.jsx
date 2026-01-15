@@ -4,6 +4,7 @@ import DefultError from '../component/Errors/DefultError'
 import CreateAuth from '../pages/AuthPages/CreateAuth'
 import VerifyPassword from '../pages/AuthPages/VerifyPassword'
 import EnrollMFA from '../pages/AuthPages/EnrollMFA'
+import HomePage from '../pages/Homepages/HomePage'
 
 function App() {
     return (
@@ -12,12 +13,16 @@ function App() {
                 <Route path='/' element={<WebSite />} >
                     <Route path='*' element={<DefultError />} />
 
+                    <Route index element={<HomePage /> } />
+
                     <Route path='/auth' element={<CreateAuth /> } />
                     <Route path='/verify-password' element={<VerifyPassword /> } />
                     <Route path='/enroll-mfa' element={<EnrollMFA /> } />
-                    
+
 
                 </Route>
+
+                
 
             </Routes>
         </BrowserRouter>
