@@ -21,7 +21,7 @@ const Menubar = () => {
     ];
 
     return (
-        <nav className="bg-white border-t border-gray-200 shadow-sm">
+        <nav className="bg-transparent border-t border-gray-200 shadow-sm">
             <div className="max-w-7xl mx-auto px-6 py-3 flex justify-between items-center">
                 {/* Desktop Menu */}
                 <ul className="hidden md:flex items-center gap-8">

@@ -4,7 +4,7 @@ import DefaultButton from '../../component/Buttons/DefaultButton';
 import { useNavigate } from 'react-router-dom';
 import Toast from '../../component/Toast/Toast';
 import useForm from '../../hooks/useForm';
-import API from '../../services/api'; 
+import API from '../../services/api';
 
 const EnrollMFA = () => {
     const navigate = useNavigate();
@@ -17,6 +17,7 @@ const EnrollMFA = () => {
 
 
     useEffect(() => {
+        localStorage.removeItem("otptoken");
         const token = localStorage.getItem("mfaToken");
         if (!token) {
             navigate("/", { replace: true });
@@ -33,10 +34,10 @@ const EnrollMFA = () => {
             try {
                 const res = await API.post(
                     "/auth/mfa/enroll",
-                    {}, 
+                    {},
                     {
                         headers: {
-                            Authorization: `Bearer ${mfaToken}`, 
+                            Authorization: `Bearer ${mfaToken}`,
                         }
                     }
                 );
@@ -44,7 +45,7 @@ const EnrollMFA = () => {
                 if (res.data.qrCode) {
                     setQrCode(res.data.qrCode);
                 } else {
-                    setQrCode(null); 
+                    setQrCode(null);
                 }
 
             } catch (err) {
@@ -89,9 +90,9 @@ const EnrollMFA = () => {
     };
 
     return (
-        <div className='min-h-screen bg-gray-50 pt-32'>
+        <div className="min-h-screen bg-neutral-900 flex items-center justify-center px-4">
             {toast && (
-                <div className="absolute top-5 right-5 z-50">
+                <div className="fixed top-6 right-6 z-50">
                     <Toast
                         success={toast.success}
                         message={toast.message}
@@ -100,30 +101,61 @@ const EnrollMFA = () => {
                 </div>
             )}
 
-            {qrCode && (
-                <div className="mb-4 text-center">
-                    <img src={qrCode} alt="MFA QR Code" className="mx-auto" />
-                    <p className="text-sm mt-2">Scan with your Authenticator app</p>
+            <div className="w-full max-w-md bg-neutral-800 border border-neutral-700 rounded-2xl shadow-2xl p-8">
+
+                {/* Header */}
+                <div className="mb-8 text-center">
+                    <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-emerald-500/10 text-emerald-400 mb-4">
+                        🔐
+                    </div>
+                    <h2 className="text-2xl font-semibold text-white">
+                        Multi-Factor Authentication
+                    </h2>
+                    <p className="text-sm text-neutral-400 mt-2">
+                        Secure your account with an authenticator app
+                    </p>
                 </div>
-            )}
 
-            <form onSubmit={handleVerifyMFA}>
-                <DefaultInput
-                    placeholder="Enter 6-digit code"
-                    type='text'
-                    value={values.otp}
-                    name='otp'
-                    onChange={handleChange}
-                    required
-                    disabled={loading} 
-                />
+                {/* QR Code */}
+                {qrCode && (
+                    <div className="mb-8 flex flex-col items-center">
+                        <div className="bg-white p-3 rounded-xl shadow-lg">
+                            <img
+                                src={qrCode}
+                                alt="MFA QR Code"
+                                className="w-40 h-40"
+                            />
+                        </div>
+                        <p className="text-xs text-neutral-400 mt-4 text-center max-w-xs">
+                            Scan this QR code using Google Authenticator, Authy, or Microsoft Authenticator
+                        </p>
+                    </div>
+                )}
 
-                <DefaultButton
-                    type="submit"
-                    label={loading ? "Verifying..." : "Verify MFA"}
-                    disabled={loading} 
-                />
-            </form>
+                {/* OTP Form */}
+                <form onSubmit={handleVerifyMFA} className="space-y-6">
+                    <DefaultInput
+                        placeholder="6-digit verification code"
+                        type="text"
+                        value={values.otp}
+                        name="otp"
+                        onChange={handleChange}
+                        required
+                        disabled={loading}
+                    />
+
+                    <DefaultButton
+                        type="submit"
+                        label={loading ? "Verifying security code..." : "Confirm & Continue"}
+                        disabled={loading}
+                        className="w-full"
+                    />
+                </form>
+
+                <div className="mt-8 text-center text-xs text-neutral-500">
+                    This step protects your account from unauthorized access
+                </div>
+            </div>
         </div>
     );
 };
