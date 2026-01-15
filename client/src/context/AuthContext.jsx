@@ -1,6 +1,5 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
-import { useNavigate } from "react-router-dom";
 
 export const AuthContext = createContext();
 
@@ -13,10 +12,6 @@ export const AuthProvider = ({ children }) => {
         role: null,
     });
 
-    const [verifyEmailInfo, setVerifyEmailInfo] = useState({
-        email: null,
-        otp: null,
-    });
 
     useEffect(() => {
         const storedToken = localStorage.getItem("token");
@@ -32,15 +27,6 @@ export const AuthProvider = ({ children }) => {
     }, []);
 
 
-    const handleEmailVerificationToken = (token) => {
-        const decoded = jwtDecode(token);
-        localStorage.setItem("emailverify", token);
-        setVerifyEmailInfo({
-            email: decoded.email,
-            otp: decoded.otp,
-        });
-    };
-
     const login = (token) => {
         const decoded = jwtDecode(token);
         localStorage.setItem("token", token);
@@ -52,20 +38,10 @@ export const AuthProvider = ({ children }) => {
         });
     };
 
-    const logout = (navigate) => {
-        localStorage.clear();
-        setAuth({ token: null, id: null, user: null, role: null });
-        setVerifyEmailInfo({ email: null, otp: null });
-        navigate("/", { replace: true });
-    };
-
     return (
         <AuthContext.Provider value={{
             auth,
-            verifyEmailInfo,
-            handleEmailVerificationToken,
             login,
-            logout,
         }}>
             {children}
         </AuthContext.Provider>

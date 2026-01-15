@@ -5,12 +5,13 @@ import { useNavigate } from 'react-router-dom';
 import Toast from '../../component/Toast/Toast';
 import useForm from '../../hooks/useForm';
 import API from '../../services/api';
+import { useAuth } from '../../context/AuthContext';
 
 const VerfiyPassword = () => {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
     const [toast, setToast] = useState(null);
-
+    const login = useAuth()
     const { values, handleChange } = useForm({ otp: '' });
     const otpToken = localStorage.getItem('otptoken');
 
@@ -47,9 +48,9 @@ const VerfiyPassword = () => {
 
 
             if (res.data.success) {
-                localStorage.setItem("token", res.data.token);                
+                login(res.data.token)       
                 setToast({ success: true, message: res.data.message });
-                setTimeout(() => navigate('/dashboard'), 2000);
+                setTimeout(() => navigate('/dashboard'), 2000);                
                 localStorage.removeItem("otptoken");
             }
 

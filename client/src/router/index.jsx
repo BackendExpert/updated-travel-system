@@ -4,6 +4,9 @@ import DefultError from '../component/Errors/DefultError'
 import CreateAuth from '../pages/AuthPages/CreateAuth'
 import VerifyPassword from '../pages/AuthPages/VerifyPassword'
 import EnrollMFA from '../pages/AuthPages/EnrollMFA'
+import PrivateRoute from './PrivateRoute'
+import Dashboard from '../layouts/Dashboard'
+import DashHome from '../pages/Dashboard/DashHome'
 
 
 function App() {
@@ -16,11 +19,11 @@ function App() {
                     <Route index element={<CreateAuth /> } />
                     <Route path='/verify-password' element={<VerifyPassword /> } />
                     <Route path='/enroll-mfa' element={<EnrollMFA /> } />
-
-
                 </Route>
 
-                
+                <Route path='/dashboard' element={<PrivateRoute roles={['admin', 'developer', 'user']} ><Dashboard /></PrivateRoute>}>
+                    <Route index element={<PrivateRoute roles={['admin', 'developer', 'user']} ><DashHome /></PrivateRoute>} />
+                </Route>                
 
             </Routes>
         </BrowserRouter>

@@ -5,13 +5,14 @@ import { useNavigate } from 'react-router-dom';
 import Toast from '../../component/Toast/Toast';
 import useForm from '../../hooks/useForm';
 import API from '../../services/api';
+import { useAuth } from '../../context/AuthContext';
 
 const EnrollMFA = () => {
     const navigate = useNavigate();
     const [qrCode, setQrCode] = useState(null);
     const [loading, setLoading] = useState(false);
     const [toast, setToast] = useState(null);
-
+    const login = useAuth()
     const { values, handleChange } = useForm({ otp: '' });
     const [mfaToken, setMfaToken] = useState(null);
 
@@ -72,10 +73,8 @@ const EnrollMFA = () => {
                     }
                 }
             );
-
-            localStorage.setItem("token", res.data.token);
+            login(res.data.token)
             localStorage.removeItem("mfaToken");
-
             setToast({ success: true, message: "MFA verified successfully!" });
             setTimeout(() => navigate("/dashboard", { replace: true }), 1500);
 
